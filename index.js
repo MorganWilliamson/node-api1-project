@@ -21,7 +21,7 @@ const UserActions = {
         return users;
     },
     getById(id) {
-
+        return users.find(user => user.id === id);
     },
     createNew(user) {
 
@@ -35,6 +35,7 @@ const UserActions = {
 };
 
 ////////// User Endpoints //////////
+// GET all users (TESTED)
 server.get("/api/users", (req, res) => {
     const users = UserActions.getAll()
     if (users) {
@@ -44,6 +45,18 @@ server.get("/api/users", (req, res) => {
     }
 });
 
+// GET user by ID (TESTED)
+server.get("/api/users/:id", (req, res) => {
+    const { id } = req.params;
+    const user = UserActions.getById(id);
+    if (user) {
+        res.status(200).json(user)
+    } else if (!user) {
+        res.status(404).json({ message: "The user with the specified ID does not exist." })
+    } else {
+        res.status(500).json({ errorMessage: "The user information could not be retrieved." })
+    }
+});
 
 
 
