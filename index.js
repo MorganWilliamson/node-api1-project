@@ -32,7 +32,11 @@ const UserActions = {
         return newUser;
     },
     delete(id) {
-
+        const user = users.find(user => user.id === id);
+        if (user) {
+            users = users.filter(u => u.id !== id)
+        }
+        return user;
     },
     update(id, changes) {
 
@@ -77,7 +81,21 @@ server.post("/api/users", (req, res) => {
     }
 })
 
-// DELETE a user
+// DELETE a user (TESTED)
+server.delete("/api/users/:id", (req, res) => {
+    const { id } = req.params;
+    const deletedUser = UserActions.delete(id);
+    if (deletedUser) {
+        res.status(200).json({ message: deletedUser.name + " has been removed."})
+    } else if (!deletedUser) {
+        res.status(500).json({ errorMessage: "The user could not be removed" })
+    } else {
+        res.status(404).json({ message: "The user with the specified ID does not exist." })
+    }
+})
+
+// PUT an update to a user
+
 
 ////////// Catch-All Endpoint //////////
 server.use("*", (req, res) => {
