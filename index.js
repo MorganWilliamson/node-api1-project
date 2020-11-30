@@ -39,7 +39,17 @@ const UserActions = {
         return user;
     },
     update(id, changes) {
-
+        const user = users.find(user => user.id === id)
+        if (!user) {
+            return null;
+        } else {
+            const updatedUser = { id, ...changes } 
+            users = users.map(u => {
+                if (u.id === u) return updatedUser
+                return u;
+            })
+            return updatedUser;
+        }
     },
 };
 
@@ -95,7 +105,22 @@ server.delete("/api/users/:id", (req, res) => {
 })
 
 // PUT an update to a user
+server.put("/api/users/:id", (req, res) => {
+    const userChanges = req.body;
+    const { id } = req.params;
 
+    const replacedUser = UserActions.update(id, userChanges)
+
+    if (replacedUser) {
+        res.status(200).json({ message: replacedUser })
+    } else if (!replacedUser) {
+        res.status(500).json({ errorMessage: "The user information could not be modified." })
+    } else if (!replacedUser.name || !replacedUser.bio) {
+        res.status(400).json({ errorMessage: "Please provide name and bio for the user." })
+    } else {
+        res.status(404).json({ message: "The user with the specified ID does not exist." })
+    }
+})
 
 ////////// Catch-All Endpoint //////////
 server.use("*", (req, res) => {
