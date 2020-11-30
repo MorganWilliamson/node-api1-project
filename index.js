@@ -104,7 +104,7 @@ server.delete("/api/users/:id", (req, res) => {
     }
 })
 
-// PUT an update to a user
+// PUT an update to a user (TESTED)
 server.put("/api/users/:id", (req, res) => {
     const userChanges = req.body;
     const { id } = req.params;
