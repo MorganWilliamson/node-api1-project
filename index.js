@@ -24,7 +24,12 @@ const UserActions = {
         return users.find(user => user.id === id);
     },
     createNew(user) {
-
+        const newUser = {
+            id: shortid.generate(),
+            ...user
+        };
+        users.push(newUser);
+        return newUser;
     },
     delete(id) {
 
@@ -58,7 +63,21 @@ server.get("/api/users/:id", (req, res) => {
     }
 });
 
+// POST new user (TESTED)
+server.post("/api/users", (req, res) => {
+    const userFromClient = req.body;
 
+    if(!userFromClient.name || !userFromClient.bio) {
+        res.status(400).json({ errorMessage: "Please provide name and bio for the user." })
+    } else if (!userFromClient) {
+        res.status(500).json({ errorMessage: "There was an error while saving the user to the database" })
+    } else {
+        const newlyCreatedUser = UserActions.createNew(userFromClient);
+        res.status(201).json(newlyCreatedUser)
+    }
+})
+
+// DELETE a user
 
 ////////// Catch-All Endpoint //////////
 server.use("*", (req, res) => {
